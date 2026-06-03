@@ -9,7 +9,9 @@ from libs.ultrasonic import measure_distance
 from libs.wifi import init_wifi
 from libs.email_alert import send_security_email
 from libs.secrets import secrets
+from libs.utils import format_time
 
+# in
 init_wifi(secrets["ssid"], secrets["password"])
 
 try:
@@ -46,173 +48,85 @@ last_email_time = 0
 
 #start with normal mode
 mode = "NORMAL"
-
+# current button and current ldr value
 last_button = button.value()
 baseline_light = ldr.read_u16()
 
-# -----------------------
-# MAIN LOOP
-# -----------------------
-
+# main loop to check mode and take action
 while True:
-
     current_button = button.value()
-
+    # change mode to security if button has changed
     if current_button == 0 and last_button == 1:
-
         if mode == "NORMAL":
-
             mode = "SECURITY"
-
             baseline_light = ldr.read_u16()
-
             lcd.clear()
-            lcd.write(
-                0,
-                0,
-                "SECURITY MODE"
-            )
-
-            lcd.write(
-                0,
-                1,
-                "ARMED"
-            )
-
+            lcd.write(0,0,"SECURITY MODE")
         else:
-
             mode = "NORMAL"
-
             lcd.clear()
-
-            lcd.write(
-                0,
-                0,
-                "NORMAL MODE"
-            )
-
+            lcd.write(0,0,"NORMAL MODE")
         utime.sleep(1)
 
     last_button = current_button
 
-    # -----------------------
-    # NORMAL MODE
-    # -----------------------
-
+    # normal mode
     if mode == "NORMAL":
-
-        celsius, fahrenheit = read_temp(
-            thermistor
-        )
-
+        celsius, fahrenheit = read_temp(thermistor)
         led.value(1)
-
         lcd.clear()
+        # lcd display temperature alternate between C and F
         lcd.write(0, 0, "T:{:.1f}C".format(celsius))
         lcd.write(0, 1, "NORMAL MODE")
         utime.sleep(2)
-
         lcd.clear()
         lcd.write(0, 0, "T:{:.1f}F".format(fahrenheit))
-        lcd.write(
-            0,
-            1,
-            "{:02d}:{:02d}".format(
-                utime.localtime()[3],
-                utime.localtime()[4]
-            )
-        )
+        #lcd display time
+        lcd.write(0,1,format_time()[11:])
         utime.sleep(2)
+        print("Temp:",round(celsius, 1),"C")
+        print("time:", utime.localtime()[3],utime.localtime()[4])
 
-
-
-        print(
-            "Temp:",
-            round(celsius, 1),
-            "C"
-        )
-
-    # -----------------------
-    # SECURITY MODE
-    # -----------------------
-
+    # security mode
     else:
-
+        #measure ldr and ultrasonic sensor
         light = ldr.read_u16()
-
-        distance = measure_distance(
-            TRIG,
-            ECHO
-        )
-
+        print("light:",light)
+        distance = measure_distance(TRIG, ECHO)
+        print("distance:",distance)
         lcd.clear()
-
-        lcd.write(
-            0,
-            0,
-            "SECURITY"
-        )
-
-        lcd.write(
-            0,
-            1,
-            "{:.0f}cm".format(
-                distance
-            )
-        )
-
+        lcd.write(0,0,"SECURITY")
+        lcd.write( 0,1, "Distance: {:.0f}cm".format(distance))
+        time.sleep(4)
+        lcd.clear()
+        lcd.write(0,0,"SECURITY MODE")
+        lcd.write(0,1,"LDR:{:5d}".format(light))
+        time.sleep(2)
         suspicious = False
         event = ""
 
+        # if distance is less than 20cm it is an alert
         if distance < DISTANCE_THRESHOLD:
-
             suspicious = True
             event = "Motion"
+            print("ALERT: Motion",distance)
 
-            print(
-                "ALERT: Motion",
-                distance
-            )
-
-        if abs(
-                light -
-                baseline_light
-        ) > LIGHT_THRESHOLD:
-
+        # if the light change is greater than the light threshold it is an alert
+        if abs(light - baseline_light) > LIGHT_THRESHOLD:
             suspicious = True
             event = "Light Change"
+            print("ALERT: Light Change",light)
 
-            print(
-                "ALERT: Light Change",
-                light
-            )
-
+        # led is blinked when suspicious flag is true
         if suspicious:
-
             led.toggle()
-
-            print(
-                "Time:",
-                utime.localtime()
-            )
-
+            print("Time:",utime.localtime())
             current_time = utime.time()
-
-            if (
-                current_time -
-                last_email_time
-            ) > EMAIL_COOLDOWN:
-
-                send_security_email(
-                    event,
-                    distance,
-                    light
-                )
-
+            # send email if a good chunk of time has passed since last email and pass in event info
+            if (current_time - last_email_time) > EMAIL_COOLDOWN:
+                send_security_email(event, distance,light)
                 last_email_time = current_time
-
         else:
-
             led.value(0)
 
     utime.sleep(0.5)
