@@ -1,7 +1,6 @@
 import network
 import time
 
-
 # Init Wi-Fi Interface
 def init_wifi(ssid, password):
     wlan = network.WLAN(network.STA_IF)

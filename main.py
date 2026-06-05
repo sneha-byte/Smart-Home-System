@@ -67,9 +67,9 @@ while True:
     # normal mode
     if mode == "NORMAL":
         celsius, fahrenheit = read_temp(thermistor)
-        led.value(0)
+        led.value(1)
         lcd.clear()
-        # lcd display temperature alternate between C and F
+        # lcd display temperature alternate between C and F every 2 seconds
         lcd.write(0, 0, "T:{:.1f}C".format(celsius))
         lcd.write(0, 1, "NORMAL MODE")
         utime.sleep(2)
@@ -111,7 +111,7 @@ while True:
             event = "Light Change"
             print("ALERT: Light Change",light)
 
-        # led is blinked when suspicious flag is true
+        # led is blinked when suspicious flag is true else it is off
         if suspicious:
             led.toggle()
             print("Time:",utime.localtime())
