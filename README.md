@@ -39,7 +39,8 @@ A smart home security system built with the Raspberry Pi Pico W and MicroPython.
 
 ## Circuit Diagram
 
-![Circuit Diagram](images/circuit-diagram.png)
+<img width="484" height="445" alt="image" src="https://github.com/user-attachments/assets/ad9e3ec7-95f2-400a-b81b-2d7941dbe59a" />
+
 
 ---
 
@@ -103,19 +104,18 @@ Connected through a 220 Ω current-limiting resistor.
 
 ### Completed Circuit
 
-![Completed Circuit](images/completed-circuit.jpg)
+<img width="293" height="221" alt="image" src="https://github.com/user-attachments/assets/08ae8ec0-c33a-4583-abbb-2b738435a463" />
+<img width="294" height="219" alt="image" src="https://github.com/user-attachments/assets/83e7f51c-164a-4b7c-8890-627e1a3c653a" />
+
 
 ### Security Mode
 
-![Security Mode - LDR](images/security-ldr.jpg)
+<img width="319" height="241" alt="image" src="https://github.com/user-attachments/assets/bfd59e2c-0fbe-4c7d-b8c6-00173749abce" />
 
-![Security Mode - Distance](images/security-distance.jpg)
 
 ### Normal Mode
 
-![Normal Mode Celsius](images/normal-celsius.jpg)
-
-![Normal Mode Fahrenheit](images/normal-fahrenheit.jpg)
+<img width="320" height="241" alt="image" src="https://github.com/user-attachments/assets/981d6c94-77ad-41b9-bccf-3c5ba0e518a8" />
 
 ---
 
@@ -221,7 +221,7 @@ The email includes:
 
 ### Example Alert
 
-![Email Alert](images/email-alert.png)
+<img width="544" height="257" alt="image" src="https://github.com/user-attachments/assets/8d7b9aa4-3851-45c6-a8c1-c712df945d3b" />
 
 ---
 
@@ -288,59 +288,6 @@ Creates a secure SMTP connection to Gmail and sends security alert emails.
 
 Formats NTP-synchronized timestamps for LCD display and email messages.
 
----
-
-# Testing Results
-
-## Temperature Monitoring Test
-
-The thermistor successfully measured room temperature and displayed values on the LCD.
-
-![Temperature Test](images/temp-test.png)
-
-### Result
-
-✅ Passed
-
----
-
-## Motion Detection Test
-
-A hand placed approximately 5 cm from the ultrasonic sensor triggered:
-
-- Motion alert
-- LED blinking
-- Email notification
-
-### Result
-
-✅ Passed
-
----
-
-## Light Detection Test
-
-Covering the LDR caused the sensor value to change significantly and generated a security alert.
-
-![LDR Test](images/ldr-test.png)
-
-### Result
-
-✅ Passed
-
----
-
-## Email Notification Test
-
-The Pico W successfully connected to Wi-Fi and sent security alert emails through Gmail SMTP.
-
-![Email Test](images/email-test.png)
-
-### Result
-
-✅ Passed
-
----
 
 # Future Improvements
 
@@ -364,11 +311,4 @@ The Pico W successfully connected to Wi-Fi and sent security alert emails throug
 - NTP Time Synchronization
 - Breadboard Prototyping
 
----
 
-## Author
-
-**Sneha Sadhwani**
-
-EECS 113 Final Project  
-University of California, Irvine
